@@ -1,0 +1,355 @@
+@cpp(src="ext-cpp/utilities.cpp,ext-cpp/trace_helper.cpp,ext-cpp/proba_helper.cpp",include="utilities.hpp,trace_helper.hpp,proba_helper.hpp")
+
+
+package waterflow
+  extern function printf(string, int, int)
+  extern function printf(string, int, float)
+  extern function printf(string,float)
+extern data type distribution_t
+extern function int select(distribution_t , int)
+extern function distribution_t init_distribution(string,int)
+
+extern  function string getfield(string line, int num)
+
+extern  function float getfield1(string  filecsv, int ln, int cl)
+
+extern function float readWH(int)
+extern function float readWP(int)
+extern function float readWV(int)
+
+
+extern function float readDIST0(int)
+extern function float readDIST1(int)
+extern function float readDIST2(int)
+extern function float readDIST3(int)
+extern function float readDIST4(int)
+extern function float readDIST5(int)
+
+extern function float minDIST(float, float,float)
+extern function float minDISTT(float, float)
+
+  port type Port_t()
+
+
+
+  atom type Component(int id)
+   data int cpt = 0
+   data int x =-1
+
+   data int item
+
+   data float WH=0
+   data float WP=0
+   data float WV=0
+
+   data float Wf=0
+
+   data float DIST0=0
+   data float DIST1=0
+   data float DIST2=0
+   data float DIST3=0
+   data float DIST4=0
+   data float DIST5=0
+
+   data float MIN = 0
+   data float MIN1 = 0
+   data float MIN2 = 0
+
+   
+   data distribution_t distrib0
+   data distribution_t distrib1
+   data distribution_t distrib2
+   data distribution_t distrib3
+   data distribution_t distrib4
+   data distribution_t distrib5
+
+   data int size0
+   data int size1
+   data int size2
+   data int size3
+   data int size4
+   data int size5
+
+    port Port_t p()
+
+    port Port_t p0wf0()
+    port Port_t p0wf1()
+    port Port_t p0wf2()
+    port Port_t p0wf()
+
+    port Port_t p1wf0()
+    port Port_t p1wf1()
+    port Port_t p1wf2()
+    port Port_t p1wf()
+
+    port Port_t p2wf0()
+    port Port_t p2wf1()
+    port Port_t p2wf2()
+    port Port_t p2wf()
+
+
+    port Port_t p3wf0()
+    port Port_t p3wf1()
+    port Port_t p3wf2()
+    port Port_t p3wf()
+
+    port Port_t p4wf0()
+    port Port_t p4wf1()
+    port Port_t p4wf2()
+    port Port_t p4wf()
+
+    port Port_t p5wf0()
+    port Port_t p5wf1()
+    port Port_t p5wf2()
+    port Port_t p5wf()
+
+
+    port Port_t p0()
+    port Port_t p1()
+    port Port_t p2()
+    port Port_t p3()
+    port Port_t p4()
+    port Port_t p5()
+
+    place START, READ ,CLUSTER0, CLUSTER1, CLUSTER2, CLUSTER3, CLUSTER4, CLUSTER5, CLUSTER0WF, CLUSTER1WF,  CLUSTER2WF,  CLUSTER3WF, CLUSTER4WF,  CLUSTER5WF,  CLUSTER0WF0, CLUSTER0WF1,CLUSTER0WF2, CLUSTER1WF0, CLUSTER1WF1,CLUSTER1WF2, CLUSTER2WF0, CLUSTER2WF1,CLUSTER2WF2, CLUSTER3WF0, CLUSTER3WF1,CLUSTER3WF2, CLUSTER4WF0, CLUSTER4WF1,CLUSTER4WF2, CLUSTER5WF0, CLUSTER5WF1,CLUSTER5WF2, CLUSTERWF0, CLUSTERWF1, CLUSTERWF2, LAST
+    initial to START do {
+
+	cpt=-1;
+	x=-1;
+	item =2;
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+
+                  distrib0 = init_distribution("dist_cluster0.txt",size0);
+	distrib1 = init_distribution("dist_cluster1.txt",size1);
+	distrib2 = init_distribution("dist_cluster2.txt",size2);
+                  distrib3 = init_distribution("dist_cluster3.txt",size3);
+	distrib4 = init_distribution("dist_cluster4.txt",size4);
+	distrib5 = init_distribution("dist_cluster5.txt",size5);
+
+	}
+    on p from START to READ provided (item<=30) do{
+
+
+	cpt=-1;
+	x=-1;	
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+
+	WH = readWH(item);
+	WP = readWP(item);
+	WV = readWV(item);
+
+
+	printf("var int c%d.WH %f\n", id, WH);
+
+
+	printf("var int c%d.WP %f\n", id, WP);
+
+
+	printf("var int c%d.WV %f\n", id, WV);
+
+	DIST0 = readDIST0(item);
+	DIST1 = readDIST1(item);
+                  DIST2 = readDIST2(item);
+	DIST3 = readDIST3(item);
+	DIST4 = readDIST4(item);
+                  DIST5 = readDIST5(item);
+
+	printf("var int DIST0 %f \n", DIST0);
+	printf("var int DIST1 %f \n", DIST1);
+	printf("var int DIST2 %f \n", DIST2);
+	printf("var int DIST3 %f \n", DIST3);
+	printf("var int DIST4 %f \n", DIST4);
+	printf("var int DIST5 %f \n", DIST5);
+
+	MIN1 =  minDIST(DIST0,DIST1,DIST2);
+	MIN2 =  minDIST(DIST3,DIST4,DIST5);
+
+	MIN =  minDISTT(MIN1,MIN2);
+
+	printf("var int MIN %f \n", MIN);
+
+
+	}
+
+   on p0 from READ to CLUSTER0 provided (MIN==DIST0) do{
+	cpt=0;
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+	x = select(distrib0,size0); 	
+	}
+   on p0wf0 from CLUSTER0 to CLUSTERWF0 provided (x==0) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+   on p0wf1 from CLUSTER0 to CLUSTERWF1 provided (x==1) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+	}
+   on p0wf2 from CLUSTER0 to CLUSTERWF2 provided (x==2) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+   on p0wf from CLUSTERWF0 to LAST 
+   on p1wf from CLUSTERWF1 to LAST 
+   on p2wf from CLUSTERWF2 to LAST 
+
+//cluster 1
+
+   on p1 from READ to CLUSTER1 provided (MIN==DIST1) do{
+	cpt=1;
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+
+	x = select(distrib1,size1); 	
+	}
+   on p1wf0 from CLUSTER1 to CLUSTERWF0 provided (x==0) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+   on p1wf1 from CLUSTER1 to CLUSTERWF1 provided (x==1) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+	}
+   on p1wf2 from CLUSTER1 to CLUSTERWF2 provided (x==2) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+
+
+
+//cluster 2
+   on p2 from READ to CLUSTER2 provided (MIN==DIST2) do{
+	cpt=2;
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+
+	x = select(distrib2,size2); 
+	}
+
+   on p2wf0 from CLUSTER2 to CLUSTERWF0 provided (x==0) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+   on p2wf1 from CLUSTER2 to CLUSTERWF1 provided (x==1) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+	}
+   on p2wf2 from CLUSTER2 to CLUSTERWF2 provided (x==2) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+
+
+
+//cluster 3
+   on p3 from READ to CLUSTER3 provided (MIN==DIST3) do{
+	cpt=3;
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+
+	x = select(distrib3,size3); 
+	}
+
+   on p3wf0 from CLUSTER3 to CLUSTERWF0 provided (x==0) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+   on p3wf1 from CLUSTER3 to CLUSTERWF1 provided (x==1) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+	}
+   on p3wf2 from CLUSTER3 to CLUSTERWF2 provided (x==2) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+
+
+
+//cluster 4
+   on p4 from READ to CLUSTER4 provided (MIN==DIST4) do{
+	cpt=4;
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+
+	x = select(distrib4,size4); 
+	}
+
+   on p4wf0 from CLUSTER4 to CLUSTERWF0 provided (x==0) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+   on p4wf1 from CLUSTER4 to CLUSTERWF1 provided (x==1) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+	}
+   on p4wf2 from CLUSTER4 to CLUSTERWF2 provided (x==2) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+
+
+
+//cluster 4
+   on p5 from READ to CLUSTER5 provided (MIN==DIST5) do{
+	cpt=5;
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+
+	x = select(distrib5,size5); 
+	}
+
+   on p5wf0 from CLUSTER5 to CLUSTERWF0 provided (x==0) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+   on p5wf1 from CLUSTER5 to CLUSTERWF1 provided (x==1) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);
+	}
+   on p5wf2 from CLUSTER5 to CLUSTERWF2 provided (x==2) do{
+	printf("var int c%d.s %d\n", id, cpt);
+	printf("var int c%d.WF %d\n", id, x);
+	printf("var int c%d.item %d\n", id, item);	
+	}
+
+
+
+
+
+  end
+
+
+
+
+  compound type Compound()
+    component Component c1(1)
+  end
+
+end
